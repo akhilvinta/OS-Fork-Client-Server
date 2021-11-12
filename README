@@ -1,0 +1,53 @@
+NAME: Akhil Vinta
+EMAIL: akhil.vinta@gmail.com
+ID: 405288527
+
+Description of included files:
+
+client.c ------------------------------------
+
+C source code which creates a connects to a socket file descriptor, and sends bytes to server. 
+Puts the terminal in non-canonical mode, and resets the terminal before the code ends execution.
+
+Input takes the following format:
+
+1. ./client --port=port_num --log=filename --compress
+Port command line argument is not optional, other two arguments are 
+
+Port option specifies the port that the client must connect and bind to.
+Compress option ensures that the bytes sent from client to server are compressed, and therefore reduces bandwidth.
+Log option ensures that number of bytes sent over and received by the client are recorded into a specified file
+
+Program executes the following steps
+a)Read input from keyboard, and send to server through socket, while also printing the input bytes to console, or stdout
+b)When receiving results from serer side of the socket, send the input to stdout, or console.
+
+server.c ------------------------------------
+
+C source code which creates a connects to a socket file descriptor, and sends bytes to client. 
+Creates a new process, from which it executes a shell. 
+
+Input takes the following format:
+
+1. ./server --port=port_num --compress
+Port command line argument is not optional, compress argument is optional
+
+
+Port option specifies the port that the client must connect and bind to.
+Compress option ensures that the bytes sent from server to client are compressed, and therefore reduces bandwidth.
+
+Program executes the following steps
+a) Forks to create a new process, which hits execlp shell.
+b) Reads input from keyboard in parent process, write to pipe that will be read in the child process and write to console
+c) From child process, execute shell that takes input from parent process and writes to pipe that will be
+read back in the parent process.
+d)Write contents of the pipe in step (b) to consle back in parent process.
+e)Write from parent process into the socket back to the client.
+
+
+Makefile -----------------------------------
+
+default case: build client and server executables with the -Wall, -Wextra -lz parameters. 
+clean: deletes all files created by the Makefile, and returns the directory to its freshly untared state.
+dist: builds the distribution tarball using the Makefile, README, and client.c/server.c
+
